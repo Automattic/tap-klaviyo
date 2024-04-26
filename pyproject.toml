@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tap-klaviyo"
-version = "0.0.1"
+version = "0.0.2"
 description = "`tap-klaviyo` is a Singer tap for Klaviyo, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Brooklyn Data"]

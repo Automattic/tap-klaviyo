@@ -151,12 +151,12 @@ class ListPersonStream(KlaviyoStream):
     """Define custom stream."""
 
     name = "listperson"
-    path = "/lists/{list_id}/relationships/profiles/"
+    path = "/lists/{list_id}/profiles/"
     primary_keys = ["id"]
     replication_key = None
     parent_stream_type = ListsStream
     schema_filepath = SCHEMAS_DIR / "listperson.json"
-    max_page_size = 1000
+    max_page_size = 100
 
     def post_process(self, row: dict, context: dict) -> dict | None:
         row["list_id"] = context["list_id"]
