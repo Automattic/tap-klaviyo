@@ -14,6 +14,13 @@ updates:
       prefix: "feat(deps): "
       prefix-development: "chore(deps-dev): "
     versioning-strategy: increase-if-necessary
+    groups:
+      development-dependencies:
+        dependency-type: development
+      runtime-dependencies:
+        dependency-type: production
+        update-types:
+          - "patch"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
@@ -21,3 +28,7 @@ updates:
       time: "12:00"
     commit-message:
       prefix: "ci: "
+    groups:
+      actions:
+        patterns:
+          - "*"

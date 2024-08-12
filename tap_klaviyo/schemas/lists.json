@@ -15,6 +15,20 @@
                 "null"
             ]
         },
+        "relationships": {
+            "description": "Relationships to other resources that are related to this list",
+            "type": [
+                "object",
+                "null"
+            ]
+        },
+        "links": {
+            "description": "Relationships to other resources that are related to this list",
+            "type": [
+                "object",
+                "null"
+            ]
+        },
         "attributes": {
             "properties": {
                 "name": {
@@ -24,7 +38,13 @@
                         "null"
                     ]
                 },
-
+                "opt_in_process": {
+                    "description": "The opt-in process for this list. Could be either 'single_opt_in' or 'double_opt_in'.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
                 "created": {
                     "description": "Date and time when the list was created, in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.mmmmmm)",
                     "format": "date-time",

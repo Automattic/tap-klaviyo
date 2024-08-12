@@ -21,6 +21,12 @@
                 "null"
             ]
         },
+        "links": {
+            "description": "Links",
+            "type": [
+                "object"
+            ]
+        },
         "attributes": {
             "properties": {
                 "company_id": {

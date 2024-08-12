@@ -10,6 +10,27 @@
                 "string"
             ]
         },
+        "relationships": {
+            "description": "",
+            "type": [
+                "null",
+                "object"
+            ]
+        },
+        "links": {
+            "description": "",
+            "type": [
+                "object"
+            ]
+        },
+        "updated": {
+            "description": "Date and time when the flow was last updated, in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.mmmmmm)",
+            "format": "date-time",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
         "attributes": {
             "properties": {
                 "name": {

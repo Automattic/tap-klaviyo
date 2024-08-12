@@ -16,11 +16,10 @@ plugins:
     - about
     - stream-maps
     settings:
-    # TODO: To configure using Meltano, declare settings and their types here:
     - name: auth_token
       kind: password
     - name: revision
-      value: '2023-02-22'
+      value: '2024-02-15'
     - name: start_date
       value: '2000-01-01'
   loaders:

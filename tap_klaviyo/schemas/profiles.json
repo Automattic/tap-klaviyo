@@ -19,6 +19,19 @@
                 "null"
             ]
         },
+        "relationships": {
+            "description": "",
+            "type": [
+                "null",
+                "object"
+            ]
+        },
+        "links": {
+            "description": "",
+            "type": [
+                "object"
+            ]
+        },
         "attributes": {
             "properties": {
                 "email": {
@@ -166,6 +179,13 @@
                             "type": [
                                 "string",
                                 "null"
+                            ]
+                        },
+                        "ip": {
+                            "description": "IP address",
+                            "type": [
+                                "null",
+                                "string"
                             ]
                         }
                     },

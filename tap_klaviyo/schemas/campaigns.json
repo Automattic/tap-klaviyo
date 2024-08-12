@@ -15,6 +15,19 @@
                 "null"
             ]
         },
+        "relationships": {
+            "description": "",
+            "type": [
+                "object",
+                "null"
+            ]
+        },
+        "links": {
+            "description": "",
+            "type": [
+                "object"
+            ]
+        },
         "attributes": {
             "properties": {
                 "name": {
@@ -29,6 +42,30 @@
                     "type": [
                         "string",
                         "null"
+                    ]
+                },
+                "audiences": {
+                    "description": "The audiences to be included and/or excluded from the campaign",
+                    "type": [
+                        "object"
+                    ]
+                },
+                "send_options": {
+                    "description": "Options to use when sending a campaign",
+                    "type": [
+                        "object"
+                    ]
+                },
+                "tracking_options": {
+                    "description": "The tracking options associated with the campaign",
+                    "type": [
+                        "object"
+                    ]
+                },
+                "send_strategy": {
+                    "description": "The send strategy the campaign will send with",
+                    "type": [
+                        "object"
                     ]
                 },
                 "status": {

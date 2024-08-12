@@ -93,7 +93,7 @@ class KlaviyoStream(RESTStream):
             if self.get_starting_timestamp(context):
                 filter_timestamp = self.get_starting_timestamp(context)
             elif self.config.get("start_date"):
-                filter_timestamp = _isodate_from_date_string(self.config("start_date"))
+                filter_timestamp = _isodate_from_date_string(self.config.get("start_date"))
             else:
                 filter_timestamp = DEFAULT_START_DATE
 
