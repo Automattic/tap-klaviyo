@@ -130,7 +130,7 @@ class CampaignValuesReportsStream(KlaviyoStream):
             next_page_token: t.Optional[t.Any],
     ) -> dict | None:
         report_attributes = self.config.get('reports_attributes', {}).get(self.name, {})
-        return {
+        report_data = {
             "data": {
                 "type": "campaign-values-report",
                 "attributes": {
@@ -159,6 +159,11 @@ class CampaignValuesReportsStream(KlaviyoStream):
                 }
             }
         }
+
+        import pprint
+        self.logger.info(f'Report data: \n{pprint.pformat(report_data)}')
+
+        return report_data
 
 
 class ProfilesStream(KlaviyoStream):
@@ -447,7 +452,7 @@ class FlowValuesReportsStream(KlaviyoStream):
             next_page_token: t.Optional[t.Any],
     ) -> dict | None:
         report_attributes = self.config.get('reports_attributes', {}).get(self.name, {})
-        return {
+        report_data = {
             "data": {
                 "type": "flow-values-report",
                 "attributes": {
@@ -476,3 +481,6 @@ class FlowValuesReportsStream(KlaviyoStream):
                 }
             }
         }
+        import pprint
+        self.logger.info(f'Report data: \n{pprint.pformat(report_data)}')
+        return report_data
