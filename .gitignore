@@ -149,3 +149,4 @@ dmypy.json
 *.vsix
 
 config.json
+.idea
