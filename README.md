@@ -80,6 +80,13 @@ pipx install poetry
 poetry install
 ```
 
+### `constraints.txt` generation:
+
+```bash
+$ poetry self add poetry-plugin-export
+$ poetry export --output constraints.txt --without-hashes
+```
+
 ### Create and Run Tests
 
 Create tests within the `tap_klaviyo/tests` subfolder and
