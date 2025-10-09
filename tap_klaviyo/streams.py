@@ -25,12 +25,12 @@ class KlaviyoEventsPaginator(KlaviyoPaginator):
     def __init__(self, events_stream: EventsStream):
         super().__init__()
         self.events_stream = events_stream
-        self.max_timestamp = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        self.max_datetime = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
 
     def get_next_url(self, response: requests.Response) -> str:
         next = super().get_next_url(response)
         if (self.events_stream.last_datetime and
-                datetime.fromisoformat(self.events_stream.last_datetime) >= self.max_timestamp):
+                datetime.fromisoformat(self.events_stream.last_datetime) >= self.max_datetime):
             return None
         return next
 
