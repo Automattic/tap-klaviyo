@@ -10,7 +10,7 @@ from time import sleep
 import requests
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 
-from tap_klaviyo.client import KlaviyoStream
+from tap_klaviyo.client import KlaviyoStream, KlaviyoPaginator
 
 if t.TYPE_CHECKING:
     from urllib.parse import ParseResult, parse_qsl
@@ -21,6 +21,17 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 class MissingConfigException(Exception):
     pass
 
+class KlaviyoEventsPaginator(KlaviyoPaginator):
+    def __init__(self, events_stream: EventsStream):
+        super().__init__()
+        self.events_stream = events_stream
+        self.max_timestamp = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    def get_next_url(self, response: requests.Response) -> str:
+        next = super().get_next_url(response)
+        if self.events_stream.last_datetime and self.events_stream.last_timestamp >= self.max_timestamp:
+            return None
+        return next
 
 class EventsStream(KlaviyoStream):
     """Define custom stream."""
@@ -30,19 +41,10 @@ class EventsStream(KlaviyoStream):
     primary_keys = ["id"]
     replication_key = "datetime"
     schema_filepath = SCHEMAS_DIR / "event.json"
+    last_datetime = None
 
-    def get_url_params(
-        self,
-        context: dict | None,
-        next_page_token: ParseResult | None,
-    ) -> dict[str, t.Any]:
-        url_params = super().get_url_params(context, next_page_token)
-        # To avoid fetching new events indefinitely let's stop after we get to current day
-        max_timestamp = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        end_filter = f"less-than(datetime,{max_timestamp.isoformat()})"
-        url_params["filter"] = f'and({url_params["filter"]},{end_filter})'
-        self.logger.debug('QUERY PARAMS: %s', url_params)
-        return url_params
+    def get_new_paginator(self) -> BaseHATEOASPaginator:
+        return KlaviyoEventsPaginator(self)
 
     def post_process(
         self,
@@ -50,6 +52,7 @@ class EventsStream(KlaviyoStream):
         context: dict | None = None,  # noqa: ARG002
     ) -> dict | None:
         row["datetime"] = row["attributes"]["datetime"]
+        self.last_datetime = row["datetime"]
         return row
 
     @property
