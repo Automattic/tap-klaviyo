@@ -31,6 +31,19 @@ class EventsStream(KlaviyoStream):
     replication_key = "datetime"
     schema_filepath = SCHEMAS_DIR / "event.json"
 
+    def get_url_params(
+        self,
+        context: dict | None,
+        next_page_token: ParseResult | None,
+    ) -> dict[str, t.Any]:
+        url_params = super().get_url_params(context, next_page_token)
+        # To avoid fetching new events indefinitely let's stop after we get to current day
+        max_timestamp = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        end_filter = f"less-than(datetime,{max_timestamp.isoformat()})"
+        url_params["filter"] = f'and({url_params["filter"]},{end_filter})'
+        self.logger.debug('QUERY PARAMS: %s', url_params)
+        return url_params
+
     def post_process(
         self,
         row: dict,
