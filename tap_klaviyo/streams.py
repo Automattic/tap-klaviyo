@@ -29,7 +29,8 @@ class KlaviyoEventsPaginator(KlaviyoPaginator):
 
     def get_next_url(self, response: requests.Response) -> str:
         next = super().get_next_url(response)
-        if self.events_stream.last_datetime and self.events_stream.last_datetime >= self.max_timestamp:
+        if (self.events_stream.last_datetime and
+                datetime.fromisoformat(self.events_stream.last_datetime) >= self.max_timestamp):
             return None
         return next
 
