@@ -25,12 +25,15 @@ class KlaviyoEventsPaginator(KlaviyoPaginator):
     def __init__(self, events_stream: EventsStream):
         super().__init__()
         self.events_stream = events_stream
-        self.max_timestamp = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        self.max_timestamp = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
 
     def get_next_url(self, response: requests.Response) -> str:
         next = super().get_next_url(response)
-        if self.events_stream.last_datetime and self.events_stream.last_timestamp >= self.max_timestamp:
-            return None
+        # Stop paginating once we reach the current day to avoid fetching new events indefinitely.
+        if self.events_stream.last_datetime:
+            last_datetime = datetime.fromisoformat(self.events_stream.last_datetime)
+            if last_datetime >= self.max_timestamp:
+                return None
         return next
 
 class EventsStream(KlaviyoStream):
@@ -52,6 +55,11 @@ class EventsStream(KlaviyoStream):
         context: dict | None = None,  # noqa: ARG002
     ) -> dict | None:
         row["datetime"] = row["attributes"]["datetime"]
+        # Drop future-dated events so the bookmark never advances past now; a future
+        # datetime filter is rejected by Klaviyo ("End date may not be in the future").
+        # This was a bug in Klaviyo's API.
+        if datetime.fromisoformat(row["datetime"]) > datetime.now(timezone.utc):
+            return None
         self.last_datetime = row["datetime"]
         return row
 
