@@ -17,6 +17,9 @@ if t.TYPE_CHECKING:
 
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
+# Seconds to wait before retrying an error response that carries no Retry-After.
+DEFAULT_RETRY_AFTER = 60
+
 
 class KlaviyoPaginator(BaseHATEOASPaginator):
     """HATEOAS paginator for the Klaviyo API."""
@@ -89,8 +92,23 @@ class KlaviyoStream(RESTStream):
         return params
 
     def backoff_wait_generator(self) -> t.Generator[float, None, None]:
-        def _backoff_from_headers(retriable_api_error):
-            response_headers = retriable_api_error.response.headers
-            return int(response_headers.get("Retry-After", 60))
+        """Return the wait generator used when a request is retried.
+
+        Klaviyo's rate-limit responses carry a ``Retry-After`` header, so honour it
+        whenever the retried error has a response to read it from.
+
+        Returns:
+            The wait generator.
+        """
+
+        def _backoff_from_headers(exception: Exception) -> int:
+            response = getattr(exception, "response", None)
+            if response is None:
+                # The SDK also retries transport-level failures (connection resets,
+                # chunked encoding errors), which carry no response at all. Reading
+                # headers off one anyway raises AttributeError from inside the wait
+                # generator and kills the tap on an error the retry can recover from.
+                return DEFAULT_RETRY_AFTER
+            return int(response.headers.get("Retry-After", DEFAULT_RETRY_AFTER))
 
         return self.backoff_runtime(value=_backoff_from_headers)
